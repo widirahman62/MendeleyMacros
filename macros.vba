@@ -925,7 +925,7 @@ Sub GAUG_createHyperlinksForCitationsIEEE()
     Set objRegExpCitation = New RegExp
     'sets the pattern to match every citation entry in current field
     'it should be "[" + Number + "]"
-    objRegExpCitation.Pattern = "\[[0-9]+\]"
+    objRegExpCitation.Pattern = "\[[0-9]+\]|\[[0-9]+\,"
     'sets case insensitivity
     objRegExpCitation.IgnoreCase = False
     'sets global applicability
@@ -956,6 +956,8 @@ Sub GAUG_createHyperlinksForCitationsIEEE()
                         'and that the citation number is in the bibliography
                         If (("[" & CStr(intCitationNumber) & "]") = objMatchCitation.Value) And (intCitationNumber > 0 And intCitationNumber < intRefereceNumber) Then
                             blnCitationNumberFound = True
+                        ElseIf (("[" & CStr(intCitationNumber) & ",") = objMatchCitation.Value) And (intCitationNumber > 0 And intCitationNumber < intRefereceNumber) Then
+                            blnCitationNumberFound = True
                         Else
                             blnCitationNumberFound = False
                         End If
@@ -966,13 +968,25 @@ Sub GAUG_createHyperlinksForCitationsIEEE()
                             sectionField.Select
 
                             'finds and selects the text of the number of the reference
-                            With Selection.Find
-                                .Forward = True
-                                .Wrap = wdFindStop
-                                .Text = "[" & CStr(intCitationNumber) & "]"
-                                .Execute
-                                blnReferenceNumberFound = .Found
-                            End With
+                            If (("[" & CStr(intCitationNumber) & "]") = objMatchCitation.Value) Then
+                                'finds and selects the text of the number of the reference
+                                With Selection.Find
+                                    .Forward = True
+                                    .Wrap = wdFindStop
+                                    .Text = "[" & CStr(intCitationNumber) & "]"
+                                    .Execute
+                                    blnReferenceNumberFound = .Found
+                                End With
+                            ElseIf (("[" & CStr(intCitationNumber) & ",") = objMatchCitation.Value) Then
+                                'finds and selects the text of the number of the reference
+                                With Selection.Find
+                                    .Forward = True
+                                    .Wrap = wdFindStop
+                                    .Text = "[" & CStr(intCitationNumber) & ","
+                                    .Execute
+                                    blnReferenceNumberFound = .Found
+                                End With
+                            End If
 
                             'if the square brackets are not part of the hyperlinks
                             If Not blnIncludeSquareBracketsInHyperlinks Then

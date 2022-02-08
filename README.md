@@ -9,6 +9,7 @@ Macros used with Microsoft Word to add new functionalities to Mendeley's plugin.
 
 ## Author
 José Luis González García
+
 Widi Rahman
 
 ## Overview
